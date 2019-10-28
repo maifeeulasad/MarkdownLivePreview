@@ -135,15 +135,15 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
             window.set_menu_visible(show_menus)
 
     def load(self):
-        print("load_always",time.time())
-        try:
-            self.update(self,self.view_)
-        except:
-            pass
-        #if ImageManager.update_view == True:
-            #print("load_always")
-        threading.Timer(1, self.load).start()
-        #ImageManager.update_view=False
+        print("load_always", ImageManager.update_view)
+        if ImageManager.update_view == True :
+            try:
+                self.update(self.view_)
+                ImageManager.update_view=True
+            except Exception as e:
+                print(e)
+                ImageManager.update_view=True
+        threading.Timer(0.5, self.load).start()
 
 class MarkdownLivePreviewClearCacheCommand(sublime_plugin.ApplicationCommand):
 
