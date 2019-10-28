@@ -1,11 +1,12 @@
 # -*- encoding: utf-8 -*-
-
+import time
 import os.path
 import tempfile
 import sublime
 from threading import Thread
 import urllib.request, urllib.error
 from .functions import *
+import threading
 
 CACHE_FILE = os.path.join(tempfile.gettempdir(),
                           'MarkdownLivePreviewCache.txt')
@@ -73,28 +74,42 @@ class ImageManager(object):
     """
     loading = {}
 
-    '''
     @staticmethod
     def get(imageurl, user_callback=None):
         print("load image")
         cached = get_cache_for(imageurl)
         if cached:
+            print("cached")
             return cached
         elif imageurl in ImageManager.loading.keys():
             # return None (the file is still loading, already made a request)
             # return string the base64 of the url (which is going to be cached)
             temp_cached = ImageManager.loading[imageurl]
+            print(temp_cached)
             if temp_cached == 404:
+                print("in keys -  temp_cached : 404")
                 return to_base64('404.png')
             if temp_cached:
+                print("in keys - temp_cached")
                 cache(imageurl, temp_cached)
                 del ImageManager.loading[imageurl]
-            return temp_cached
+                return temp_cached
+            print("still loading")
+            time.sleep(1)
+            ImageManager.get(imageurl)
         else:
+            print("load from internet")
             # load from internet
             ImageManager.loading[imageurl] = None
             callback = get_base64_saver(ImageManager.loading, imageurl)
             loader = ImageLoader(imageurl, callback)
             loader.start()
             sublime.set_timeout_async(lambda: loader.join(), TIMEOUT * 1000)
+            ImageManager.get(imageurl)
+            #ImageManager.load_image_thread(imageurl)
+    '''
+    def load_image_thread(imageurl):
+        print("image thread")
+        threading.Timer(2, ImageManager.load_image_thread(imageurl)).start()
+        ImageManager.get(imageurl)
     '''
