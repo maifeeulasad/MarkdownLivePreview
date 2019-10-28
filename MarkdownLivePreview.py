@@ -3,6 +3,7 @@
 import sublime
 import sublime_plugin
 import time
+import threading
 
 from .MLPApi import *
 from .setting_names import *
@@ -67,7 +68,11 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
         if preview is None:
             raise ValueError('The preview is None (id: {})'.format(id))
 
-        show_html(view, preview)
+
+        disp_thread = threading.Thread(show_html(view, preview))
+        disp_thread.start()
+
+        
         return view, preview
 
     def on_modified_async(self, view):

@@ -106,10 +106,3 @@ class ImageManager(object):
             loader.start()
             sublime.set_timeout_async(lambda: loader.join(), TIMEOUT * 1000)
             ImageManager.get(imageurl)
-            #ImageManager.load_image_thread(imageurl)
-    '''
-    def load_image_thread(imageurl):
-        print("image thread")
-        threading.Timer(2, ImageManager.load_image_thread(imageurl)).start()
-        ImageManager.get(imageurl)
-    '''

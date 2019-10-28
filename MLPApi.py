@@ -64,6 +64,12 @@ def markdown2html(md, basepath, color_scheme):
 
     # Phantoms have problem with images size when they're loaded from an url/path
     # So, the solution is to convert them to base64
+
+    '''
+    img_thread = threading.Thread(target=function_that_downloads, args=some_args)
+    img_thread.start()
+    '''
+
     html = replace_img_src_base64(html, basepath=basepath)
 
     # BeautifulSoup uses the <br/> but the sublime phantoms do not support them...
