@@ -73,9 +73,10 @@ class ImageManager(object):
     """
     loading = {}
 
+    '''
     @staticmethod
     def get(imageurl, user_callback=None):
-
+        print("load image")
         cached = get_cache_for(imageurl)
         if cached:
             return cached
@@ -96,3 +97,4 @@ class ImageManager(object):
             loader = ImageLoader(imageurl, callback)
             loader.start()
             sublime.set_timeout_async(lambda: loader.join(), TIMEOUT * 1000)
+    '''
