@@ -139,7 +139,7 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
         if ImageManager.update_view == True :
             try:
                 self.update(self.view_)
-                ImageManager.update_view=True
+                ImageManager.update_view=False
             except Exception as e:
                 print(e)
                 ImageManager.update_view=True
