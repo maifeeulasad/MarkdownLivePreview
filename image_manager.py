@@ -73,13 +73,16 @@ class ImageManager(object):
         'data:image/png;base64,....'
     """
     loading = {}
+    done=False
 
     @staticmethod
     def get(imageurl, user_callback=None):
+        done=False
         print("load image")
         cached = get_cache_for(imageurl)
         if cached:
             print("cached")
+            done=True
             return cached
         elif imageurl in ImageManager.loading.keys():
             # return None (the file is still loading, already made a request)

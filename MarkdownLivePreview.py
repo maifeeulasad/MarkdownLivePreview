@@ -41,20 +41,21 @@ class NewMarkdownLivePreviewCommand(sublime_plugin.ApplicationCommand):
         mdsettings.set(PREVIEW_ENABLED, True)
         mdsettings.set(PREVIEW_ID, preview.id())
 
-        #self.view.run_command("my")
-
-
-
 
     def is_enabled(self):
         return is_markdown_view(sublime.active_window().active_view())
 
+
+
+
 class MarkdownLivePreviewListener(sublime_plugin.EventListener):
 
     def update(self, view):
+
         vsettings = view.settings()
         now = time.time()
 
+        print("update")
 
         if now - vsettings.get(LAST_UPDATE, 0) < get_settings().get('update_preview_every'):
             return
@@ -69,9 +70,9 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
             raise ValueError('The preview is None (id: {})'.format(id))
 
 
-        disp_thread = threading.Thread(show_html(view, preview))
-        disp_thread.start()
+        show_html(view, preview)
 
+        print("update---")
         
         return view, preview
 
@@ -103,10 +104,6 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
 
 
     def on_load_async(self, view):
-        #print("on_load_async")
-        #view.run_command("my")
-        
-
         """Check the settings to hide menu, minimap, etc"""
         try:
             md_view, preview = self.update(view)
@@ -137,17 +134,3 @@ class MarkdownLivePreviewClearCacheCommand(sublime_plugin.ApplicationCommand):
 
     def run(self):
         clear_cache()
-
-#failed attemt - concept was what if i just edit file and put a return at EOF
-'''
-class MyCommand(sublime_plugin.TextCommand):
-    def run(self, edit, **kwargs):
-        tem=self.view.substr(sublime.Region(0, self.view.size()))
-        print("my command")
-        #print(tem)
-        self.view.insert(edit, len(tem), "\n")
-        self.view.run_command('save', kwargs)
-        #self.view.replace(edit, sublime.Region(0, self.view.size()), tem)
-        #self.view.run_command('save', kwargs)
-'''
-
