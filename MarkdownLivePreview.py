@@ -41,7 +41,6 @@ class NewMarkdownLivePreviewCommand(sublime_plugin.ApplicationCommand):
         mdsettings.set(PREVIEW_ENABLED, True)
         mdsettings.set(PREVIEW_ID, preview.id())
 
-        #self.view.run_command("my")
 
 
 
@@ -51,7 +50,11 @@ class NewMarkdownLivePreviewCommand(sublime_plugin.ApplicationCommand):
 
 class MarkdownLivePreviewListener(sublime_plugin.EventListener):
 
+    view_=None
+
     def update(self, view):
+        print("update")
+        self.view_=view
         vsettings = view.settings()
         now = time.time()
 
@@ -69,10 +72,10 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
             raise ValueError('The preview is None (id: {})'.format(id))
 
 
-        disp_thread = threading.Thread(show_html(view, preview))
-        disp_thread.start()
+        show_html(view, preview)
 
         
+
         return view, preview
 
     def on_modified_async(self, view):
@@ -103,9 +106,7 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
 
 
     def on_load_async(self, view):
-        #print("on_load_async")
-        #view.run_command("my")
-        
+        self.load()
 
         """Check the settings to hide menu, minimap, etc"""
         try:
@@ -133,21 +134,18 @@ class MarkdownLivePreviewListener(sublime_plugin.EventListener):
         if show_menus is not None:
             window.set_menu_visible(show_menus)
 
+    def load(self):
+        print("load_always",time.time())
+        try:
+            self.update(self,self.view_)
+        except:
+            pass
+        #if ImageManager.update_view == True:
+            #print("load_always")
+        threading.Timer(1, self.load).start()
+        #ImageManager.update_view=False
+
 class MarkdownLivePreviewClearCacheCommand(sublime_plugin.ApplicationCommand):
 
     def run(self):
         clear_cache()
-
-#failed attemt - concept was what if i just edit file and put a return at EOF
-'''
-class MyCommand(sublime_plugin.TextCommand):
-    def run(self, edit, **kwargs):
-        tem=self.view.substr(sublime.Region(0, self.view.size()))
-        print("my command")
-        #print(tem)
-        self.view.insert(edit, len(tem), "\n")
-        self.view.run_command('save', kwargs)
-        #self.view.replace(edit, sublime.Region(0, self.view.size()), tem)
-        #self.view.run_command('save', kwargs)
-'''
-

@@ -73,32 +73,34 @@ class ImageManager(object):
         'data:image/png;base64,....'
     """
     loading = {}
+    update_view=True
 
     @staticmethod
     def get(imageurl, user_callback=None):
         print("load image")
+        update_view=True
         cached = get_cache_for(imageurl)
         if cached:
-            print("cached")
+            #print("cached")
             return cached
         elif imageurl in ImageManager.loading.keys():
             # return None (the file is still loading, already made a request)
             # return string the base64 of the url (which is going to be cached)
             temp_cached = ImageManager.loading[imageurl]
-            print(temp_cached)
+            #print(temp_cached)
             if temp_cached == 404:
-                print("in keys -  temp_cached : 404")
+                #print("in keys -  temp_cached : 404")
                 return to_base64('404.png')
             if temp_cached:
-                print("in keys - temp_cached")
+                #print("in keys - temp_cached")
                 cache(imageurl, temp_cached)
                 del ImageManager.loading[imageurl]
                 return temp_cached
-            print("still loading")
+            #print("still loading")
             time.sleep(1)
             ImageManager.get(imageurl)
         else:
-            print("load from internet")
+            #print("load from internet")
             # load from internet
             ImageManager.loading[imageurl] = None
             callback = get_base64_saver(ImageManager.loading, imageurl)

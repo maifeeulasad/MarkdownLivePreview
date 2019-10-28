@@ -78,6 +78,7 @@ def markdown2html(md, basepath, color_scheme):
     return html
 
 def show_html(md_view, preview):
+    print("show_html")
     global windows_phantom_set
     html = markdown2html(get_view_content(md_view), os.path.dirname(md_view.file_name()), md_view.settings().get('color_scheme'))
 
